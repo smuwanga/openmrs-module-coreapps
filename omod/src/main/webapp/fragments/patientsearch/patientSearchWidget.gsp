@@ -4,6 +4,7 @@
 
     ui.includeCss("uicommons", "datatables/dataTables_jui.css")
     ui.includeCss("coreapps", "patientsearch/patientSearchWidget.css")
+	ui.includeCss("coreapps", "patientsearch/fontcustom_findpatient_fingerprint.css")
     ui.includeJavascript("uicommons", "datatables/jquery.dataTables.min.js")
     ui.includeJavascript("coreapps", "patientsearch/patientSearchWidget.js")
     ui.includeJavascript("uicommons", "moment-with-locales.min.js")
@@ -61,7 +62,9 @@
 </script>
 
 <form method="get" id="patient-search-form" onsubmit="return false">
-    <input type="text" id="patient-search" placeholder="${ ui.message("coreapps.findPatient.search.placeholder") }" autocomplete="off" <% if (doInitialSearch) { %>value="${doInitialSearch}"<% } %>/><i id="patient-search-clear-button" class="small icon-remove-sign"></i>
+    <input type="text" id="patient-search" placeholder="${ ui.message("coreapps.findPatient.search.placeholder") }" autocomplete="off" <% if (doInitialSearch) { %>value="${doInitialSearch}"<% } %>/>
+    <i id="patient-search-clear-button" class="small icon-remove-sign"></i>
+    <i id="patient-search-finger-print-button" class="small icon-fingerprint"></i>
 </form>
 
 <div id="patient-search-results"></div>
