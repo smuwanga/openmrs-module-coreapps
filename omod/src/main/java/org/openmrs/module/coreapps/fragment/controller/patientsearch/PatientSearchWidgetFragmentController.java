@@ -2,6 +2,9 @@ package org.openmrs.module.coreapps.fragment.controller.patientsearch;
 
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.Patient;
+import org.openmrs.Person;
+import org.openmrs.PersonAttribute;
+import org.openmrs.PersonAttributeType;
 import org.openmrs.api.AdministrationService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.appui.UiSessionContext;
@@ -12,10 +15,13 @@ import org.openmrs.ui.framework.annotation.FragmentParam;
 import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.fragment.FragmentModel;
 import org.openmrs.util.OpenmrsConstants;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
+
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -61,4 +67,58 @@ public class PatientSearchWidgetFragmentController {
 
     }
 
+    public @ResponseBody String searchForPatientByFingerPrint(
+            @RequestParam(value = "datakey", required = false)String fingerPrintInBase64){
+    	//String patientSearchPageUrl = "http://localhost:8080/openmrs/coreapps/findpatient/findPatient.page?app=patients.findPatientByFingerprint";
+    	String fingerPrintPersonAttributeTypeUUID = "0fe8824e-f9f8-42fa-a919-4d2dcd00a5da";
+    	
+    	String uuid ="null";
+    	 System.out.println("Server reached");
+    	 
+    	
+    	try{
+    		Context.openSession();
+            Context.authenticate("admin", "Admin123");
+            
+
+        	//search patient attribute: leftIndexFingerPrint
+        	List<Patient> patients = Context.getPatientService().getAllPatients();
+    		System.out.println("Number of Patients: "+patients.size());
+        	
+        	if(fingerPrintInBase64!= null){
+        		for(Patient patientInstance : patients){
+        			List<PersonAttribute> personAttributes = patientInstance.getActiveAttributes();
+        			
+        			for(PersonAttribute personAttribute: personAttributes){
+        				System.out.println("Person Attribute: "+personAttribute.getValue());
+        				
+        					System.out.println("Person Attribute Type UUID: "+personAttribute.getAttributeType().getUuid());
+        					if(personAttribute.getAttributeType().getUuid().equalsIgnoreCase(fingerPrintPersonAttributeTypeUUID)){
+            					System.out.println("Person attributeType passed...");
+            					//test if the base64 generated matches our stored base64 text
+            					if(personAttribute.getValue() != null ){
+            						System.out.println("Patient UUID: "+patientInstance.getUuid());
+            						uuid = patientInstance.getUuid();
+            						break;
+            					}
+            				}
+        				
+        			}//end person attribute loop
+        
+        			if(uuid!="null"){
+        				break;
+        			}
+        		}//end patient loop
+        	}
+    	}catch(Exception e){
+    		e.getStackTrace();
+    	}
+    		finally{
+    	
+    		Context.closeSession();
+    	}
+    	
+    	return uuid;
+    }
+   
 }

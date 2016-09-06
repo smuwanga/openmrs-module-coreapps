@@ -7,7 +7,9 @@
 	ui.includeCss("coreapps", "patientsearch/fontcustom_findpatient_fingerprint.css")
     ui.includeJavascript("uicommons", "datatables/jquery.dataTables.min.js")
     ui.includeJavascript("coreapps", "patientsearch/patientSearchWidget.js")
+	ui.includeJavascript("coreapps", "patientsearch/patientFingerPrintSearch.js")
     ui.includeJavascript("uicommons", "moment-with-locales.min.js")
+  
 %>
 <script type="text/javascript">
 
@@ -39,6 +41,7 @@
             dateFormat: '${ dateFormatJS }',
             locale: '${ locale }',
             defaultLocale: '${ defaultLocale }',
+            
             messages: {
                 info: '${ ui.message("coreapps.search.info") }',
                 first: '${ ui.message("coreapps.search.first") }',
@@ -60,11 +63,39 @@
         new PatientSearchWidget(widgetConfig);
     });
 </script>
-
+<script type="text/javascript">
+    function searchFingerPrint(){
+    	var baseUrl ="http://localhost:8080/openmrs/coreapps/clinicianfacing/patient.page?patientId=";
+    	jq.ajax({
+			url : "${ ui.actionLink('searchForPatientByFingerPrint') }",
+			method : "POST",
+			data: {"datakey": "fingerPrintInBase64"},
+			success : function(returnedPatientUuid) {
+			    alert("Data returned: "+returnedPatientUuid);
+				window.location = baseUrl.concat(returnedPatientUuid);
+			},
+			error : function(request,status,error) {
+			   alert("Ooops: "+request.status+", error: "+error.description);
+			   console.log(request);
+			   console.log(status);
+			   console.log(error);
+			   
+		    }
+		});
+    }
+	
+</script>
 <form method="get" id="patient-search-form" onsubmit="return false">
     <input type="text" id="patient-search" placeholder="${ ui.message("coreapps.findPatient.search.placeholder") }" autocomplete="off" <% if (doInitialSearch) { %>value="${doInitialSearch}"<% } %>/>
     <i id="patient-search-clear-button" class="small icon-remove-sign"></i>
     <i id="patient-search-finger-print-button" class="small icon-fingerprint"></i>
 </form>
-
+<div id="patient-search-finger-print" style="display:none;">
+    <br>
+	<button id="testAjaxButton" onclick="searchFingerPrint()"></button>
+    <p>Search functionality</p>
+	<applet code="org.openmrs.module.fingerprint.applet.PatientSearchApplet" archive="/openmrs/finger-print-applet.jar" width="650" height="300">
+            
+    </applet>
+</div>
 <div id="patient-search-results"></div>
