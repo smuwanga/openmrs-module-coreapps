@@ -71,6 +71,7 @@
 			method : "POST",
 			data: {"datakey": "fingerPrintInBase64"},
 			success : function(returnedPatientUuid) {
+			    
 			    alert("Data returned: "+returnedPatientUuid);
 				window.location = baseUrl.concat(returnedPatientUuid);
 			},

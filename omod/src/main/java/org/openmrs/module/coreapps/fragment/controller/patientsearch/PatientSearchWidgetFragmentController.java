@@ -10,10 +10,13 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.appui.UiSessionContext;
 import org.openmrs.module.coreapps.CoreAppsConstants;
 import org.openmrs.module.emrapi.utils.GeneralUtils;
+import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiFrameworkConstants;
 import org.openmrs.ui.framework.annotation.FragmentParam;
 import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.fragment.FragmentModel;
+import org.openmrs.ui.framework.fragment.action.FragmentActionResult;
+import org.openmrs.ui.framework.fragment.action.SuccessResult;
 import org.openmrs.util.OpenmrsConstants;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -67,10 +70,12 @@ public class PatientSearchWidgetFragmentController {
 
     }
 
-    public @ResponseBody String searchForPatientByFingerPrint(
+    public @ResponseBody FragmentActionResult searchForPatientByFingerPrint(
             @RequestParam(value = "datakey", required = false)String fingerPrintInBase64){
     	//String patientSearchPageUrl = "http://localhost:8080/openmrs/coreapps/findpatient/findPatient.page?app=patients.findPatientByFingerprint";
     	String fingerPrintPersonAttributeTypeUUID = "0fe8824e-f9f8-42fa-a919-4d2dcd00a5da";
+    	Patient searchedPatient = new Patient();
+    	
     	
     	String uuid ="null";
     	 System.out.println("Server reached");
@@ -99,6 +104,7 @@ public class PatientSearchWidgetFragmentController {
             					if(personAttribute.getValue() != null ){
             						System.out.println("Patient UUID: "+patientInstance.getUuid());
             						uuid = patientInstance.getUuid();
+            						searchedPatient = patientInstance;
             						break;
             					}
             				}
@@ -118,7 +124,11 @@ public class PatientSearchWidgetFragmentController {
     		Context.closeSession();
     	}
     	
-    	return uuid;
+    	SuccessResult successResult = new SuccessResult();
+    	successResult.setMessage(uuid);
+    	
+    	
+    	return successResult;
     }
    
 }
