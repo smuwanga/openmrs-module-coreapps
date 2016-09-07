@@ -64,26 +64,31 @@
     });
 </script>
 <script type="text/javascript">
-    function searchFingerPrint(){
-    	var baseUrl ="http://localhost:8080/openmrs/coreapps/clinicianfacing/patient.page?patientId=";
-    	jq.ajax({
-			url : "${ ui.actionLink('searchForPatientByFingerPrint') }",
-			method : "POST",
-			data: {"datakey": "fingerPrintInBase64"},
-			success : function(returnedPatientUuid) {
-			    
-			    alert("Data returned: "+returnedPatientUuid);
-				window.location = baseUrl.concat(returnedPatientUuid);
-			},
-			error : function(request,status,error) {
-			   alert("Ooops: "+request.status+", error: "+error.description);
-			   console.log(request);
-			   console.log(status);
-			   console.log(error);
-			   
-		    }
+    jq = jQuery;
+    
+    
+    
+    jq(function() {
+    jq('#testAjaxButton').click(function() {
+		        jq.getJSON('${ ui.actionLink("searchForPatientByFingerPrint") }',
+		            {
+		              'datakey': 'searchForPatientByFingerPrint'
+		              
+		             
+		            })
+		        .success(function(data) {
+		           var patient = JSON.parse(data);
+		           var baseurl = "http://localhost:8080/openmrs/coreapps/clinicianfacing/patient.page?patientId="+patient.uuid);
+		            window.location(baseurl);
+		            //alert("Data returned: "+patient.uuid);
+				   
+		            
+		        })
+		        .error(function(xhr, status, err) {
+		            alert('AJAX error ' + err);
+		        })
+		    });
 		});
-    }
 	
 </script>
 <form method="get" id="patient-search-form" onsubmit="return false">

@@ -6,12 +6,14 @@ import org.openmrs.Person;
 import org.openmrs.PersonAttribute;
 import org.openmrs.PersonAttributeType;
 import org.openmrs.api.AdministrationService;
+import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.appui.UiSessionContext;
 import org.openmrs.module.coreapps.CoreAppsConstants;
 import org.openmrs.module.emrapi.utils.GeneralUtils;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiFrameworkConstants;
+import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.annotation.FragmentParam;
 import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.fragment.FragmentModel;
@@ -70,8 +72,10 @@ public class PatientSearchWidgetFragmentController {
 
     }
 
-    public @ResponseBody FragmentActionResult searchForPatientByFingerPrint(
-            @RequestParam(value = "datakey", required = false)String fingerPrintInBase64){
+    public SimpleObject searchForPatientByFingerPrint(
+            @RequestParam(value = "datakey", required = false)String fingerPrintInBase64,
+            @SpringBean("patientService") PatientService service,
+            UiUtils ui){
     	//String patientSearchPageUrl = "http://localhost:8080/openmrs/coreapps/findpatient/findPatient.page?app=patients.findPatientByFingerprint";
     	String fingerPrintPersonAttributeTypeUUID = "0fe8824e-f9f8-42fa-a919-4d2dcd00a5da";
     	Patient searchedPatient = new Patient();
@@ -117,18 +121,18 @@ public class PatientSearchWidgetFragmentController {
         		}//end patient loop
         	}
     	}catch(Exception e){
+    		System.out.println(".......exception..................................................................");
     		e.getStackTrace();
     	}
     		finally{
     	
     		Context.closeSession();
     	}
+    	String [] properties = {"uuid"};
+    	SimpleObject simplePatientObject = SimpleObject.fromObject(searchedPatient, ui, properties);
     	
-    	SuccessResult successResult = new SuccessResult();
-    	successResult.setMessage(uuid);
     	
-    	
-    	return successResult;
+    	return simplePatientObject;
     }
    
 }
