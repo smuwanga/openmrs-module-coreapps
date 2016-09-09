@@ -95,7 +95,11 @@ public class PatientSearchWidgetFragmentController {
     		System.out.println("Number of Patients: "+patients.size());
         	
         	if(fingerPrintInBase64!= null){
+        		
+        		
         		for(Patient patientInstance : patients){
+        		//for(int index = lastIndex; index > -1; index--){
+        	    //		Patient patientInstance = patients.get(index);
         			List<PersonAttribute> personAttributes = patientInstance.getActiveAttributes();
         			
         			for(PersonAttribute personAttribute: personAttributes){
@@ -128,6 +132,9 @@ public class PatientSearchWidgetFragmentController {
     	
     		Context.closeSession();
     	}
+    	
+    	String pageName = "patient.page?patientId="+uuid;
+        ui.pageLink("coreapps", pageName);
     	String [] properties = {"uuid"};
     	SimpleObject simplePatientObject = SimpleObject.fromObject(searchedPatient, ui, properties);
     	

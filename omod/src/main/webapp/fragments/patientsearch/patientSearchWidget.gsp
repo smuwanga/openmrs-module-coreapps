@@ -77,12 +77,10 @@
 		             
 		            })
 		        .success(function(data) {
-		           var patient = JSON.parse(data);
-		           var baseurl = "http://localhost:8080/openmrs/coreapps/clinicianfacing/patient.page?patientId="+patient.uuid);
-		            window.location(baseurl);
-		            //alert("Data returned: "+patient.uuid);
-				   
+		           
+		            window.location=".../../coreapps/clinicianfacing/patient.page?patientId=" + data.uuid;
 		            
+				 
 		        })
 		        .error(function(xhr, status, err) {
 		            alert('AJAX error ' + err);
